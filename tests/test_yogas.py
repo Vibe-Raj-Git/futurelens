@@ -101,3 +101,64 @@ def test_pancha_mahapurusha_partial_ok():
     pm = report.by_id("PANCHA_MAHAPURUSHA")
     assert isinstance(pm.present, bool)
     assert pm.classical_basis == "BPHS ch. 75"
+
+def test_dhana_yoga_shared_lordship_reference_chart():
+    """
+    Reference chart: 1984-08-30 12:02 IST, Ujjain (Scorpio lagna).
+
+    Jupiter rules both the 2nd (Sagittarius) and the 5th (Pisces),
+    and sits in Sagittarius - its own sign - in the 2nd house.
+
+    Classical Dhana Yoga per BPHS ch. 24 and Phaladeepika: one
+    graha ruling two wealth houses, occupying a wealth house, in
+    its own sign. Three conditions, one graha.
+
+    The prior detector only tested two *distinct* wealth lords in
+    conjunction / aspect / exchange, so this chart returned
+    present=False with failed=('no_relation_between_wealth_lords',).
+    """
+    from datetime import timedelta
+
+    ist = timezone(timedelta(hours=5, minutes=30))
+    birth = datetime(1984, 8, 30, 12, 2, 0, tzinfo=ist).astimezone(
+        timezone.utc
+    )
+    chart = cast_chart(birth, 22.7196, 75.8577)
+
+    report = detect_yogas(chart)
+    dhana = report.by_id("DHANA_YOGA")
+
+    assert dhana is not None, "DHANA_YOGA missing from report"
+    assert dhana.present is True, (
+        f"DHANA_YOGA should be present on the reference chart. "
+        f"met={dhana.conditions_met} "
+        f"failed={dhana.conditions_failed}"
+    )
+    assert "shared_lordship_2_5=JUPITER" in dhana.conditions_met
+    assert "occupies_wealth_house=JUPITER" in dhana.conditions_met
+    assert "own_sign_in_wealth_house=JUPITER" in dhana.conditions_met
+
+
+def test_dhana_yoga_regression_mumbai_chart():
+    """
+    Regression: 1990-07-15 06:30 UTC, Mumbai (Virgo lagna).
+
+    Venus rules the 2nd (Libra) and the 9th (Taurus), Saturn rules
+    the 5th (Capricorn). Saturn and Venus are in mutual aspect.
+
+    The extension must NOT suppress this pre-existing detection,
+    and must additionally recognise Venus's shared lordship of
+    two wealth houses.
+    """
+    chart = cast_chart(BIRTH, LAT, LON)
+    report = detect_yogas(chart)
+    dhana = report.by_id("DHANA_YOGA")
+
+    assert dhana is not None, "DHANA_YOGA missing from report"
+    assert dhana.present is True, (
+        f"DHANA_YOGA should remain present on the Mumbai chart. "
+        f"met={dhana.conditions_met} "
+        f"failed={dhana.conditions_failed}"
+    )
+    assert "SATURN-VENUS_mutual_aspect" in dhana.conditions_met
+    assert "shared_lordship_2_9=VENUS" in dhana.conditions_met
