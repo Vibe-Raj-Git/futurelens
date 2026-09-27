@@ -70,6 +70,9 @@ def rule_family_lord_natal(chart) -> list[Evidence]:
     """
     evidence: list[Evidence] = []
 
+    ashtaka = chart.ashtakavarga()
+    house_signs = chart.houses.house_signs
+
     for house in FAMILY_HOUSES:
         lord_name = chart.houses.lord_of_house(house)
         lord = chart.grahas[lord_name]
@@ -97,6 +100,10 @@ def rule_family_lord_natal(chart) -> list[Evidence]:
             lord_rules_another_wealth_house=rules_other,
         )
 
+        house_sign = house_signs[house]
+        sav_bindus = ashtaka.sav.bindus_by_sign[house_sign]
+        sav_label = _sav_strength_label(sav_bindus)
+
         evidence.append(Evidence(
             evidence_type=EvidenceType.UPAGRAHA_NATAL_PLACEMENT,
             direction=direction,
@@ -113,7 +120,10 @@ def rule_family_lord_natal(chart) -> list[Evidence]:
             subject=f"{ordinal(house)} house lord {lord_name}",
             finding=(
                 f"{lord_name} is in {house_phrase(lord_house)}, "
-                f"{sign_name(lord.sign_index)}."
+                f"{sign_name(lord.sign_index)}. "
+                f"The {ordinal(house)} house falls in "
+                f"{sign_name(house_sign)}, which holds {sav_bindus} "
+                f"SAV bindus ({sav_label})."
             ),
             interpretation=(
                 f"The {ordinal(house)} house relates to {reason}. "
@@ -130,13 +140,11 @@ def rule_family_lord_natal(chart) -> list[Evidence]:
                 f"retrograde={lord.retrograde}",
                 f"graha={lord_name}",
                 f"reason={reason_key}",
+                f"sav_bindus={sav_bindus}",
             ),
         ))
 
     return evidence
-
-
-# --- Rule 2: Family significator natal -----------------------------------
 
 def rule_family_significator_natal(chart) -> list[Evidence]:
     """
@@ -742,3 +750,17 @@ def rule_family_gochara(chart, when) -> list[Evidence]:
         ))
 
     return evidence
+
+
+def _sav_strength_label(bindus: int) -> str:
+    """Convert an SAV bindu count into a strength label."""
+    if bindus >= 30:
+        return "VERY_STRONG"
+    if bindus >= 25:
+        return "STRONG"
+    if bindus >= 20:
+        return "MODERATE"
+    if bindus >= 15:
+        return "WEAK"
+    return "VERY_WEAK"
+

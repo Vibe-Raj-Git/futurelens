@@ -128,12 +128,25 @@ class Chart:
         )
 
     def ashtakavarga(self):
-        """Compute and return the Ashtakavarga report."""
+        """
+        Compute and return the Ashtakavarga report.
+
+        The result is cached on the instance so that multiple
+        consumers (the domain rules that annotate houses with SAV
+        bindus, the transit engine, the Gochara engine) do not
+        each trigger a fresh computation.
+        """
+        cached = getattr(self, "_ashtakavarga_cache", None)
+        if cached is not None:
+            return cached
+
         from futurelens.ashtakavarga.engine import (
             compute_ashtakavarga,
         )
 
-        return compute_ashtakavarga(self)
+        result = compute_ashtakavarga(self)
+        object.__setattr__(self, "_ashtakavarga_cache", result)
+        return result
 
     def transits_at(self, when: datetime) -> TransitReport:
         """

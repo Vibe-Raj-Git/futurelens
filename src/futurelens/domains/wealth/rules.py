@@ -67,6 +67,9 @@ def rule_wealth_lord_natal(chart) -> list[Evidence]:
     """
     evidence: list[Evidence] = []
 
+    ashtaka = chart.ashtakavarga()
+    house_signs = chart.houses.house_signs
+
     for house in WEALTH_HOUSES:
         lord_name = chart.houses.lord_of_house(house)
         lord = chart.grahas[lord_name]
@@ -96,21 +99,28 @@ def rule_wealth_lord_natal(chart) -> list[Evidence]:
             lord_rules_another_wealth_house=rules_other_wealth_house,
         )
 
-        # Semantic fields for the LLM and API consumers.
-        _subject = (
-            f"{ordinal(house)} house lord {lord_name}"
-        )
-        _finding_parts = [
+        house_sign = house_signs[house]
+        sav_bindus = ashtaka.sav.bindus_by_sign[house_sign]
+        sav_label = _sav_strength_label(sav_bindus)
+
+        subject = f"{ordinal(house)} house lord {lord_name}"
+
+        finding_parts = [
             f"{lord_name} is in {house_phrase(lord_house)}, "
             f"{sign_name(lord.sign_index)}."
         ]
         if lord.combust:
-            _finding_parts.append(
-                f"It is combust, which weakens its significations."
+            finding_parts.append(
+                "It is combust, which weakens its significations."
             )
-        _finding = " ".join(_finding_parts)
+        finding_parts.append(
+            f"The {ordinal(house)} house falls in "
+            f"{sign_name(house_sign)}, which holds {sav_bindus} SAV "
+            f"bindus ({sav_label})."
+        )
+        finding = " ".join(finding_parts)
 
-        _interp = (
+        interp = (
             f"The {ordinal(house)} house relates to {reason}. "
             f"The placement is {reason_phrase(reason_key)}."
         )
@@ -128,9 +138,9 @@ def rule_wealth_lord_natal(chart) -> list[Evidence]:
                 basis="BPHS ch. 24; Phaladeepika ch. 6",
                 method="wealth_lord_natal_evaluation",
             ),
-            subject=_subject,
-            finding=_finding,
-            interpretation=_interp,
+            subject=subject,
+            finding=finding,
+            interpretation=interp,
             notes=(
                 f"house={house}",
                 f"house_reason={reason}",
@@ -142,13 +152,11 @@ def rule_wealth_lord_natal(chart) -> list[Evidence]:
                 f"retrograde={lord.retrograde}",
                 f"graha={lord_name}",
                 f"reason={reason_key}",
+                f"sav_bindus={sav_bindus}",
             ),
         ))
 
     return evidence
-
-
-# --- Rule 2: Wealth significator natal -----------------------------------
 
 def rule_wealth_significator_natal(chart) -> list[Evidence]:
     """WEALTH-SIGNIFICATOR-NATAL-001"""
@@ -574,3 +582,17 @@ def rule_wealth_gochara(chart, when) -> list[Evidence]:
         ))
 
     return evidence
+
+
+def _sav_strength_label(bindus: int) -> str:
+    """Convert an SAV bindu count into a strength label."""
+    if bindus >= 30:
+        return "VERY_STRONG"
+    if bindus >= 25:
+        return "STRONG"
+    if bindus >= 20:
+        return "MODERATE"
+    if bindus >= 15:
+        return "WEAK"
+    return "VERY_WEAK"
+
