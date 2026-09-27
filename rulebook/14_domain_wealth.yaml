@@ -1,0 +1,49 @@
+version: 0.1
+domain: WEALTH
+
+houses: [2, 5, 9, 11]
+
+house_reasons:
+  2: accumulated wealth, family resources
+  5: speculation, investments, inheritance
+  9: fortune, dharma, guru grace
+  11: gains, income, fulfillment of desires
+
+significators: [JUPITER, VENUS, MERCURY, MOON, SATURN]
+
+significator_reasons:
+  JUPITER: primary dhana karaka
+  VENUS: value and luxury
+  MERCURY: commerce and trade
+  MOON: liquidity and cash flow
+  SATURN: long-term accumulation
+
+rules:
+  - rule_id: WEALTH-HOUSE-LORD-NATAL-001
+    basis: BPHS ch. 24; Phaladeepika ch. 6
+    direction_logic:
+      dusthana: ADVERSE
+      combust: ADVERSE
+      otherwise: PROTECTIVE
+
+  - rule_id: WEALTH-SIGNIFICATOR-NATAL-001
+    basis: BPHS ch. 24
+    direction_logic:
+      dusthana: ADVERSE
+      combust: ADVERSE
+      in_wealth_house: PROTECTIVE
+      otherwise: PROTECTIVE
+
+  - rule_id: WEALTH-LORD-DASHA-001
+    basis: BPHS ch. 46
+    uses_levels: [MAHADASHA, ANTARDASHA]
+
+  - rule_id: WEALTH-SIGNIFICATOR-TRANSIT-001
+    basis: Gochara
+    grahas: [JUPITER, SATURN]
+
+  - rule_id: WEALTH-UPAGRAHA-001
+    basis: Phaladeepika ch. 25
+
+  - rule_id: WEALTH-YAMAKANTAKA-PROTECT-001
+    basis: Phaladeepika 25.21, 25.25

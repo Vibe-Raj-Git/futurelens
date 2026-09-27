@@ -1,0 +1,124 @@
+version: 0.2
+
+zodiac:
+
+  system: SIDEREAL
+
+ayanamsha:
+
+  system: TRUE_CITRA
+
+  name: TRUE_CHITRAPAKSHA
+
+  provider: SWISS_EPHEMERIS
+
+  swiss_ephemeris_id: SIDM_TRUE_CITRA
+
+  default: true
+
+  supported:
+    - TRUE_CITRA
+    - LAHIRI
+
+  consistency:
+    source_of_truth: CHART_CONVENTIONS
+    apply_to:
+      - ASCENDANT
+      - PLANETS
+      - NODES
+
+  notes:
+    - "TRUE_CITRA is the default sidereal ayanamsha."
+    - "Swiss Ephemeris SIDM_TRUE_CITRA is used for TRUE_CITRA."
+    - "LAHIRI remains available as an explicit alternative."
+    - "Ascendant and planetary calculations must use the same ayanamsha."
+    - "No calculation may silently fall back to a different ayanamsha."
+
+houses:
+
+  primary: WHOLE_SIGN
+
+  bhava_chalit_used_for: []
+
+  notes:
+    - "House assignment is based on the sidereal ascendant sign."
+    - "Whole-sign houses are the primary house system."
+    - "Bhava Chalit is not used unless explicitly enabled by a future convention."
+
+nodes:
+
+  type: TRUE
+
+  notes:
+    - "Rahu and Ketu are calculated using the configured sidereal ayanamsha."
+    - "Ketu is derived as the point opposite Rahu."
+
+sunrise_sunset:
+
+  definition: UPPER_LIMB_WITH_REFRACTION
+
+  source: standard_astronomical
+
+  timezone:
+    calculation_reference: UTC
+
+  notes:
+    - "Sunrise and sunset are astronomical events and are independent of ayanamsha."
+    - "Local input timezone is converted to UTC for astronomical calculation."
+    - "If birth time occurs before the calculated sunrise, the previous astronomical day is used for the sunrise/sunset pair."
+
+upagraha:
+
+  default_enumeration: PRIMARY_NINE
+
+  default_kalavela_method: PHALADEEPIKA_25
+
+  default_sun_chain_method: PHALADEEPIKA_25
+
+  day_division_count: 8
+
+  night_division_count: 8
+
+  segment_reference: START_OF_SEGMENT
+
+  night_start_reference: FIFTH_WEEKDAY_LORD
+
+  notes:
+    - "The eight day divisions follow the Phaladeepika Chapter 25 convention."
+    - "The eight night divisions follow the Phaladeepika Chapter 25 convention."
+    - "PRIMARY_NINE is the default Upagraha enumeration."
+    - "EXTENDED_KALAVELA remains available as an explicit alternative."
+
+time:
+
+  input_timezone: REQUIRED
+
+  historical_dst: RESPECT_INPUT_TZ
+
+  internal_reference:
+    astronomical_calculations: UTC
+
+  notes:
+    - "Naive datetimes are treated as UTC for backward compatibility."
+    - "Timezone-aware input is normalized to UTC for astronomical calculations."
+    - "The supplied timezone must not be silently replaced when timezone-aware input is provided."
+
+validation:
+
+  conventions:
+
+    day_division_count:
+      required: 8
+
+    night_division_count:
+      required: 8
+
+  ayanamsha:
+    default: TRUE_CITRA
+    explicit_selection_required_for_override: true
+
+  houses:
+    primary: WHOLE_SIGN
+
+  nodes:
+    type: TRUE

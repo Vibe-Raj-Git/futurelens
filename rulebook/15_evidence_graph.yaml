@@ -1,0 +1,48 @@
+version: 0.1
+
+principle: >
+  Evidence items are typed, versioned, and traceable. The LLM receives
+  evidence items, not raw chart data.
+
+evidence_types:
+  - UPAGRAHA_NATAL_PLACEMENT
+  - UPAGRAHA_HOUSE_ASSOCIATION
+  - UPAGRAHA_LORD_ASSOCIATION
+  - UPAGRAHA_PLANET_ASSOCIATION
+  - UPAGRAHA_DASHA_ACTIVATION
+  - UPAGRAHA_TRANSIT_TRIGGER
+  - UPAGRAHA_ASHTAKAVARGA_MODIFIER
+  - UPAGRAHA_PROTECTIVE_MODIFIER
+  - UPAGRAHA_ADVERSE_MODIFIER
+
+directions:
+  - ADVERSE
+  - PROTECTIVE
+  - CONTEXT_INCOMPLETE
+
+modifier_semantics:
+  ADVERSE_MODIFIER:
+    requires_target: false
+  PROTECTIVE_MODIFIER:
+    requires_target: true
+    if_no_target: SILENT
+
+required_provenance_fields:
+  - rule_id
+  - rule_version
+  - tradition
+  - classical_basis
+  - calculation_method
+  - calculation_convention
+
+llm_contract:
+  receives:
+    - derived_labels
+    - evidence_items
+    - contradiction_flags
+    - domain_context
+  does_not_receive:
+    - raw_longitudes
+    - raw_ephemeris
+    - unstructured_chart_dumps
+    - evidence_without_rule_id

@@ -1,0 +1,17 @@
+version: 0.1
+
+principle: >
+  Contradictions are preserved, not averaged. The engine emits
+  both directions and flags the conflict.
+
+rules:
+  - rule_id: CONFLICT-001
+    name: opposite_direction_same_domain
+    statement: >
+      If two evidence items in the same domain point in opposite
+      directions, emit a contradiction flag. Do not sum.
+  - rule_id: CONFLICT-002
+    name: dependency_missing
+    statement: >
+      If a rule requires a dependency that is not available, emit
+      CONTEXT_INCOMPLETE rather than a weakened conclusion.

@@ -1,0 +1,24 @@
+version: 0.1
+engine: TRANSIT
+
+houses_from:
+  - LAGNA
+  - MOON_SIGN
+
+nakshatra_distance:
+  from: MOON_NAKSHATRA
+  modular: true
+  range: [0, 26]
+
+slow_grahas:
+  - SATURN
+  - JUPITER
+  - RAHU
+  - KETU
+
+sade_sati:
+  rule_id: SAT-SADE-SATI-001
+  phases:
+    RISING: "Saturn in 12th nakshatra from Moon"
+    PEAK: "Saturn in same nakshatra as Moon"
+    SETTING: "Saturn in 2nd nakshatra from Moon"

@@ -1,0 +1,67 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+env/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Secrets - NEVER bake into the image
+.env
+.env.*
+
+# Session backups
+*.bak
+*.bak1
+*.bak2
+*.bak3
+*.bak_*
+*.bak-*
+*.bak.old
+*.py.bak*
+*.backup
+
+# Temp JSON files
+test_chat.json
+test_chat_gemini.json
+test_forecast.json
+
+# Frontend build outputs (rebuilt in the image)
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Node
+node_modules/
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# Docs
+docs/
+ARCHITECTURE.md

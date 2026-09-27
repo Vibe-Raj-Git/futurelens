@@ -1,0 +1,39 @@
+version: 0.1
+component: LLM_INTERPRETATION
+
+principle: >
+  The LLM explains evidence. It does not generate astrology.
+
+payload_contract:
+  receives:
+    - domain
+    - when
+    - evidence (rule_id, direction, notes, classical_basis, tradition)
+    - contradictions
+    - question (optional)
+  does_not_receive:
+    - raw longitudes
+    - raw ephemeris data
+    - sunrise/sunset datetimes
+    - birth datetime
+    - any evidence item without a rule_id
+
+forbidden_keys:
+  - longitude
+  - tropical_longitude
+  - sidereal_longitude
+  - obliquity
+  - lst_degrees
+  - sunrise
+  - sunset
+  - birth_datetime
+
+response_requirements:
+  - every claim must cite a rule_id
+  - contradictions must be preserved, not resolved
+  - no specific event predictions
+  - no new astrological claims
+
+backends:
+  - TEMPLATE (default, deterministic, no external dependency)
+  - pluggable via LLMBackend protocol

@@ -1,0 +1,100 @@
+version: 0.1
+system: ASHTAKAVARGA
+
+# Classical bindu contribution tables from BPHS chapter 66.
+#
+# Structure:
+#   tables[SUBJECT][CONTRIBUTOR] = list of houses counted from
+#   the CONTRIBUTOR'S position. For each such house, if a planet
+#   or lagna named by CONTRIBUTOR sits in that house from the
+#   SUBJECT, a bindu is added to the sign so occupied.
+#
+# In this implementation, we compute bindus for each SIGN in the
+# chart. For each subject S and each contributor C (a graha or
+# LAGNA), we take C's sign, add the listed offsets, and mark the
+# resulting signs as receiving a bindu from C toward S's BAV.
+#
+# The total per BAV is not fixed by the classical rule; it is the
+# natural consequence of the contributions. The SAV total is 337
+# in the standard classical configuration.
+#
+# Reference: BPHS ch. 66; also common in Parashara's Light and
+# Jagannatha Hora with identical tables.
+
+# Each table below is: subject -> contributor -> list of house
+# offsets (1..12) that contribute a bindu.
+
+SUN:
+  SUN: [1, 2, 4, 7, 8, 9, 10, 11]
+  MOON: [3, 6, 10, 11]
+  MARS: [1, 2, 4, 7, 8, 9, 10, 11]
+  MERCURY: [3, 5, 6, 9, 10, 11, 12]
+  JUPITER: [5, 6, 9, 11]
+  VENUS: [6, 7, 12]
+  SATURN: [1, 2, 4, 7, 8, 9, 10, 11]
+  LAGNA: [3, 4, 6, 10, 11, 12]
+
+MOON:
+  SUN: [3, 6, 7, 8, 10, 11]
+  MOON: [1, 3, 6, 7, 10, 11]
+  MARS: [2, 3, 5, 6, 9, 10, 11]
+  MERCURY: [1, 3, 4, 5, 7, 8, 10, 11]
+  JUPITER: [1, 4, 7, 8, 10, 11, 12]
+  VENUS: [3, 4, 5, 7, 9, 10, 11]
+  SATURN: [3, 5, 6, 11]
+  LAGNA: [3, 6, 10, 11]
+
+MARS:
+  SUN: [3, 5, 6, 10, 11]
+  MOON: [3, 6, 11]
+  MARS: [1, 2, 4, 7, 8, 10, 11]
+  MERCURY: [3, 5, 6, 11]
+  JUPITER: [6, 10, 11, 12]
+  VENUS: [6, 8, 11, 12]
+  SATURN: [1, 4, 7, 8, 9, 10, 11]
+  LAGNA: [1, 3, 6, 10, 11]
+
+MERCURY:
+  SUN: [5, 6, 9, 11, 12]
+  MOON: [2, 4, 6, 8, 10, 11]
+  MARS: [1, 2, 4, 7, 8, 9, 10, 11]
+  MERCURY: [1, 3, 5, 6, 9, 10, 11, 12]
+  JUPITER: [6, 8, 11, 12]
+  VENUS: [1, 2, 3, 4, 5, 8, 9, 11]
+  SATURN: [1, 2, 4, 7, 8, 9, 10, 11]
+  LAGNA: [1, 2, 4, 6, 8, 10, 11]
+
+JUPITER:
+  SUN: [1, 2, 3, 4, 7, 8, 9, 10, 11]
+  MOON: [2, 5, 7, 9, 11]
+  MARS: [1, 2, 4, 7, 8, 10, 11]
+  MERCURY: [1, 2, 4, 5, 6, 9, 10, 11]
+  JUPITER: [1, 2, 3, 4, 7, 8, 10, 11]
+  VENUS: [2, 5, 6, 9, 10, 11]
+  SATURN: [3, 5, 6, 12]
+  LAGNA: [1, 2, 4, 5, 6, 7, 9, 10, 11]
+
+VENUS:
+  SUN: [8, 11, 12]
+  MOON: [1, 2, 3, 4, 5, 8, 9, 11, 12]
+  MARS: [3, 4, 6, 9, 11, 12]
+  MERCURY: [3, 5, 6, 9, 11]
+  JUPITER: [5, 8, 9, 10, 11]
+  VENUS: [1, 2, 3, 4, 5, 8, 9, 10, 11]
+  SATURN: [3, 4, 5, 8, 9, 10, 11]
+  LAGNA: [1, 2, 3, 4, 5, 8, 9, 11]
+
+SATURN:
+  SUN: [1, 2, 4, 7, 8, 10, 11]
+  MOON: [3, 6, 11]
+  MARS: [3, 5, 6, 10, 11, 12]
+  MERCURY: [6, 8, 9, 10, 11, 12]
+  JUPITER: [5, 6, 11, 12]
+  VENUS: [6, 11, 12]
+  SATURN: [3, 5, 6, 11]
+  LAGNA: [1, 3, 4, 6, 10, 11]
+
+# Note on LAGNA as a subject: the classical SAV uses the seven
+# planets as subjects only. The LAGNA contributor produces a
+# bindu in each BAV, but the LAGNA does not have its own BAV
+# subject row in the classical SAV.

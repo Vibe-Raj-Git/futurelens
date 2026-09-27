@@ -1,0 +1,22 @@
+# =============================================================================
+# FutureLens - local Docker Compose
+#
+# Usage:
+#   docker compose up --build
+#
+# Then open http://localhost:8000
+# =============================================================================
+
+services:
+  futurelens:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: futurelens:latest
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      PORT: "8000"
+    restart: unless-stopped

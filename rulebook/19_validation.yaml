@@ -1,0 +1,22 @@
+version: 0.1
+
+invariants:
+  sun_chain:
+    - id: INV-SUN-001
+      statement: "angular_distance(DHUMA, INDRACHAPA) == 180 deg"
+    - id: INV-SUN-002
+      statement: "angular_distance(VYATIPATA, PARIVESHA) == 180 deg"
+    - id: INV-SUN-003
+      statement: "angular_distance(UPAKETU, SUN) == 30 deg"
+
+golden_charts:
+  - id: GC-001
+    description: "Reference chart verified against two independent Jyotish packages"
+
+edge_cases:
+  - birth_at_exact_sunrise
+  - birth_at_exact_sunset
+  - birth_at_high_latitude
+  - birth_during_historical_dst_transition
+  - birth_before_1900
+  - mrityu_calculated_even_when_profile_is_PRIMARY_NINE

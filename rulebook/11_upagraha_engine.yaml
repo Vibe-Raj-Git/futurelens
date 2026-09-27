@@ -1,0 +1,69 @@
+version: 0.1
+engine: UPAGRAHA
+
+enumerations:
+  PRIMARY_NINE:
+    kalavela: [GULIKA, YAMAKANTAKA, KALA, ARDHAPRAHARA]
+    sun_chain: [DHUMA, VYATIPATA, PARIVESHA, INDRACHAPA, UPAKETU]
+  EXTENDED_KALAVELA:
+    kalavela: [GULIKA, YAMAKANTAKA, KALA, ARDHAPRAHARA, MRITYU]
+    sun_chain: [DHUMA, VYATIPATA, PARIVESHA, INDRACHAPA, UPAKETU]
+
+classical_strength:
+  reference: GULIKA
+  ratios:
+    GULIKA: 1.0
+    YAMAKANTAKA: 1.0
+    KALA: 0.5
+    ARDHAPRAHARA: 0.5
+    MRITYU: 0.5
+    DHUMA: 0.5
+    VYATIPATA: 0.5
+    PARIVESHA: 0.5
+    INDRACHAPA: 0.5
+    UPAKETU: 0.5
+
+nature:
+  GULIKA: { parent: SATURN, nature: MALEFIC, role: OBSTRUCTION_MODIFIER }
+  YAMAKANTAKA: { parent: JUPITER, nature: BENEFIC, role: PROTECTIVE_MODIFIER }
+  KALA: { parent: SUN, nature: ADVERSE, role: LOSS_MODIFIER }
+  ARDHAPRAHARA: { parent: MERCURY, nature: CONTEXT_DEPENDENT, role: OBSTACLE_MODIFIER }
+  MRITYU: { parent: MARS, nature: ADVERSE, role: SEVERITY_MODIFIER }
+  DHUMA: { parent: MARS, nature: ADVERSE, role: DESTRUCTION_MODIFIER }
+  VYATIPATA: { parent: RAHU, nature: ADVERSE, role: CHAOS_MODIFIER }
+  PARIVESHA: { parent: MOON, nature: ADVERSE, role: ILLUSION_MODIFIER }
+  INDRACHAPA: { parent: VENUS, nature: ADVERSE, role: DECEPTION_MODIFIER }
+  UPAKETU: { parent: KETU, nature: ADVERSE, role: ENDING_MODIFIER }
+
+activation:
+  rule_id: UPG-DASHA-001
+  classical_basis: "Phaladeepika 25.25"
+  statement: >
+    Upagraha effects manifest during the dasha of the lord of the
+    house occupied by the Upagraha.
+  dasha_planet_resolution: HOUSE_LORD_OF_OCCUPIED_HOUSE
+
+ardhaprahara:
+  rule_id: UPG-ARDHA-001
+  classical_basis: "Phaladeepika 25.21"
+  interpretive_choice: ASHTAKAVARGA_BINDUS
+  alternative_readings:
+    - NATURAL_BENEFIC_COUNT
+    - HOUSE_SUPPORT_INDEX
+  dependency:
+    required: ASHTAKAVARGA
+    if_missing: CONTEXT_INCOMPLETE
+
+edge_cases:
+  gulika_in_own_sign:
+    rule_id: UPG-EDGE-001
+    statement: >
+      If Gulika occupies Capricorn or Aquarius, the house lord is Saturn.
+      Saturn is also Gulika's parent planet. The activation rule refers
+      to the HOUSE LORD, not the parent planet. No double activation.
+  yamakantaka_in_jupiter_sign:
+    rule_id: UPG-EDGE-002
+    statement: >
+      If Yamakantaka occupies Sagittarius or Pisces, the house lord is
+      Jupiter. The protective modifier is NOT strengthened by this fact
+      alone; contextual evidence rules decide.
