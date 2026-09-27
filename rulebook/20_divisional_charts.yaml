@@ -1,0 +1,171 @@
+version: 0.1
+system: DIVISIONAL_CHARTS
+
+# Divisional charts (vargas) are computed by transforming D1
+# sidereal longitudes into a finer-grained sign index. D9 (Navamsa)
+# is the first varga implemented. Others (D2, D3, D4, D7, D10,
+# D12, D30) follow the same transform pattern with different
+# division counts and start rules.
+
+vargas:
+
+  D9:
+
+    name: NAVAMSA
+
+    divisions: 9
+
+    degrees_per_division: 3.3333333333333335    # 30 / 9
+
+    classical_basis: "BPHS ch. 6"
+
+    description: >
+      Each 30-degree rasi is divided into nine navamsas of 3 degrees
+      20 minutes each. The sign occupied by the navamsa is the D9
+      sign of the graha.
+
+    transform: >
+      Given a sidereal longitude L:
+        sign_index       = floor(L / 30)
+        degree_in_sign   = L - sign_index * 30
+        navamsa_index    = floor(degree_in_sign / (30 / 9))
+        d9_sign_index    = (sign_index * 9 + navamsa_index) mod 12
+
+      This is mathematically equivalent to the classical
+      movable / fixed / dual counting rule:
+        - movable signs (Aries, Cancer, Libra, Capricorn):
+          count starts from the sign itself
+        - fixed signs (Taurus, Leo, Scorpio, Aquarius):
+          count starts from the 9th sign from it
+        - dual signs (Gemini, Virgo, Sagittarius, Pisces):
+          count starts from the 5th sign from it
+
+    reference_table:
+
+      # Hand-computed reference for validation.
+      # Each entry: sign_index (0..11) -> list of nine navamsa
+      # sign indices, one per 3.3333-degree division.
+      # Verified against the algebraic transform: ALL MATCH.
+
+      0:  [0, 1, 2, 3, 4, 5, 6, 7, 8]     # Aries (movable)
+      1:  [9, 10, 11, 0, 1, 2, 3, 4, 5]   # Taurus (fixed, start 9th = Capricorn)
+      2:  [6, 7, 8, 9, 10, 11, 0, 1, 2]   # Gemini (dual, start 5th = Libra)
+      3:  [3, 4, 5, 6, 7, 8, 9, 10, 11]   # Cancer (movable)
+      4:  [0, 1, 2, 3, 4, 5, 6, 7, 8]     # Leo (fixed, start 9th = Aries)
+      5:  [9, 10, 11, 0, 1, 2, 3, 4, 5]   # Virgo (dual, start 5th = Capricorn)
+      6:  [6, 7, 8, 9, 10, 11, 0, 1, 2]   # Libra (movable)
+      7:  [3, 4, 5, 6, 7, 8, 9, 10, 11]   # Scorpio (fixed, start 9th = Cancer)
+      8:  [0, 1, 2, 3, 4, 5, 6, 7, 8]     # Sagittarius (dual, start 5th = Aries)
+      9:  [9, 10, 11, 0, 1, 2, 3, 4, 5]   # Capricorn (movable)
+      10: [6, 7, 8, 9, 10, 11, 0, 1, 2]   # Aquarius (fixed, start 9th = Libra)
+      11: [3, 4, 5, 6, 7, 8, 9, 10, 11]   # Pisces (dual, start 5th = Cancer)
+
+    dignity:
+
+      reuse_d1_tables: true
+
+      description: >
+        D9 dignity of a graha is determined by the same
+        exaltation / debilitation / moolatrikona / own-sign tables
+        used in D1, applied to the D9 sign index. No separate
+        tables.
+
+    reconciliation:
+
+      description: >
+        Compares a graha's D1 dignity to its D9 dignity. The D9
+        chart is a confirmation chart: it either confirms the D1
+        promise, upgrades it, or downgrades it.
+
+      categories:
+
+        CONFIRMED:
+          condition: >
+            strong in D1 and strong in D9, OR
+            weak in D1 and weak in D9
+          weight_tier: SUPPORTING
+          meaning: >
+            The D9 chart confirms what D1 promises. The graha
+            delivers as the natal chart indicates.
+
+        UPGRADED:
+          condition: weak in D1 and strong in D9
+          weight_tier: MODIFIER
+          meaning: >
+            Neecha Bhanga at the divisional level. The graha
+            delivers more than its D1 dignity alone would suggest.
+
+        DOWNGRADED:
+          condition: strong in D1 and weak in D9
+          weight_tier: MODIFIER
+          meaning: >
+            The graha does not deliver what its D1 dignity alone
+            would promise. The D1 strength is not carried into D9.
+
+        NEUTRAL:
+          condition: any other combination
+          weight_tier: SUPPORTING
+          meaning: >
+            D1 and D9 do not align on strength or weakness. The
+            D9 chart neither confirms nor denies the D1 judgment.
+
+      dignity_bands:
+
+        strong:
+          includes:
+            - EXALTED
+            - MOOLATRIKONA
+            - OWN_SIGN
+
+        weak:
+          includes:
+            - DEBILITATED
+
+        neutral:
+          description: >
+            Any dignity label not in strong or weak
+            (currently: NEUTRAL).
+
+      scope:
+
+        domain_filtering: >
+          Reconciliation evidence is emitted only for grahas
+          relevant to the domain being read. The wealth domain
+          emits reconciliation for wealth lords and
+          significators; the career domain for career lords and
+          significators; the family domain for family lords.
+
+        rationale: >
+          A graha that is not a domain significator does not
+          bear on the domain's reading. Emitting reconciliation
+          for every graha in every domain would flood the
+          evidence graph with items that do not affect the
+          reading.
+
+    output:
+
+      d9_sign_index:   int      # 0..11
+      d9_sign_name:    str      # "Aries" .. "Pisces"
+      d9_dignity:      str      # EXALTED / MOOLATRIKONA / OWN_SIGN /
+                                # DEBILITATED / NEUTRAL
+
+    notes:
+      - "D9 is the first divisional chart implemented."
+      - "The transform uses the algebraic form (sign * 9 + navamsa)
+        mod 12, which is equivalent to the classical movable / fixed /
+        dual counting rule."
+      - "D9 dignity reuses the D1 dignity tables; no separate tables."
+      - "Reconciliation categories and weights follow the domain
+        evidence weight tiers: SUPPORTING for reinforcement,
+        MODIFIER for qualification."
+      - "Only domain-relevant grahas receive reconciliation evidence."
+      - "Reference table verified against the algebraic form: ALL MATCH."
+
+# Future vargas follow the same structure:
+#   D2  Hora      - divisions: 2   - wealth
+#   D3  Drekkana  - divisions: 3   - siblings, courage
+#   D4  Chaturthamsa - divisions: 4 - property
+#   D7  Saptamsa  - divisions: 7   - children
+#   D10 Dasamsa   - divisions: 10  - career
+#   D12 Dwadasamsa- divisions: 12  - parents
+#   D30 Trimsamsa - divisions: 30  - misfortune, character
