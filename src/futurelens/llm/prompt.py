@@ -96,6 +96,29 @@ Structure your reading in this order:
 A reading that lists every item equally is a report, not a reading.
 Produce a reading.
 
+DOMAIN-SPECIFIC PRIORITY
+
+When several STRUCTURAL findings are present, prefer the finding
+most specific to the domain being read.
+
+For WEALTH, prefer Dhana Yoga, Lakshmi Yoga, or a wealth-lord
+placement (2nd, 5th, 9th, 11th lord in its own sign or in another
+wealth house). A Raja Yoga is also structural, but it speaks to
+power and status. When a wealth-specific structural finding exists,
+lead with it. Mention the Raja Yoga after.
+
+For CAREER, prefer Raja Yoga, Pancha Mahapurusha Yoga, or a
+10th-lord placement. These are directly about profession and
+public role.
+
+For FAMILY, prefer the relationship rule findings (mother, father,
+spouse, children, siblings) and the family-house lords. A yoga that
+affects family life is secondary to the specific relationship
+configuration.
+
+If two STRUCTURAL findings are both domain-relevant, present the
+one that most directly governs the domain being read.
+
 ================================================================
 EVIDENCE IS THE SOURCE OF TRUTH
 ================================================================
