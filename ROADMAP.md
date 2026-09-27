@@ -79,10 +79,50 @@ None currently. v0.4 is complete.
 
 ---
 
-## Next — Stage 3: Shadbala
+## Next — Stage 4a: D9 Navamsa
 
-The six-fold strength framework. Largest remaining gap in
-interpretive depth.
+The one divisional chart that affects every rule. A graha strong
+in D1 but weak in D9 promises less than it appears. A graha weak
+in D1 but strong in D9 gets upgraded.
+
+Sequenced before Shadbala because the largest Shadbala component,
+Saptavargaja Bala, requires the graha's dignity across seven
+divisional charts (D1, D2, D3, D7, D9, D12, D30). Building D9
+first removes one dependency and produces an immediately useful
+refinement — the D1-vs-D9 strength reconciliation rule applied
+across every domain.
+
+Scope:
+
+- Navamsa (D9) longitudes derived from D1 longitudes by the
+  classical transform
+- D9 sign per graha, D9 house per graha, D9 dignity per graha
+- Cross-chart comparison: for each graha, is the D1 judgment
+  confirmed, upgraded, or downgraded by D9?
+- The reconciliation surfaced as evidence in each domain,
+  MODIFIER or SUPPORTING weight depending on magnitude
+- Rulebook entry documenting the transform and the
+  reconciliation rule
+
+Estimated 150–200 lines plus tests.
+
+---
+
+## After D9
+
+### Stage 3 — Shadbala
+
+The six-fold strength framework. Turns "in own sign = strong" into
+"Shadbala 420 rupas = delivers its promise."
+
+Deferred until after D9 because Saptavargaja Bala — one of the six
+components — requires dignity across seven divisional charts
+(D1, D2, D3, D7, D9, D12, D30). D9 is the first of those we build.
+The remaining vargas (D2, D3, D7, D12, D30) are sequenced with the
+Shadbala implementation so Saptavargaja can be computed completely
+rather than partially.
+
+Components:
 
 - **Sthana Bala** — positional strength (uchcha, saptavargaja,
   ojhayugma, kendra, drekkana)
@@ -96,22 +136,14 @@ interpretive depth.
 - **Drik Bala** — aspectual strength
 
 Output: total in rupas. Classical threshold: 300 rupas for a graha
-to deliver its promise. Once computed, every existing rule that
-reasons about strength ("in own sign = strong") gains a
-quantitative follow-up ("Shadbala 420 rupas = delivers").
+to deliver its promise.
+
+The other five Shadbala components — Sthana (partial), Dig, Kala,
+Chesta, Naisargika, Drik — do not depend on divisional charts and
+can be built in parallel with the varga work if a session runs
+short.
 
 Estimated scope: 400–600 lines plus tests.
-
----
-
-## After Shadbala
-
-### Stage 4a — D9 Navamsa
-
-The one divisional chart that affects every rule. A graha strong in
-D1 but weak in D9 promises less than it appears. A graha weak in D1
-but strong in D9 gets upgraded. Adding D9 to the engine means every
-existing strength judgment acquires a confirmation layer.
 
 ### Stage 4b — D2 Hora, D10 Dasamsa
 
@@ -124,6 +156,10 @@ Domain-specific divisional charts:
 
 Each is a mathematical transform of the D1 longitudes. The
 interpretive rules matter more than the transform.
+
+Note: D2, D7, and D10 also feed the Saptavargaja Bala component
+of Shadbala. If Shadbala is implemented before this stage is
+complete, Saptavargaja will be partial.
 
 ### Stage 5 — Pratyantardasha timing windows
 
@@ -171,8 +207,7 @@ The following are classical apparatus that a complete Jyotish
 product would eventually include. They are not on the near-term
 roadmap.
 
-- Shodasha-varga (all sixteen divisional charts)
-- Shadbala's full sub-component set (partial Shadbala is Stage 3)
+- Shodasha-varga (all sixteen divisional charts beyond D9)
 - Bhava-bala (house strength proper, distinct from SAV)
 - Ishta and Kashta Phala
 - Yogas beyond the classical forty
