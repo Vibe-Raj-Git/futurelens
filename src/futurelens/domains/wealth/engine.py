@@ -57,6 +57,7 @@ def build_wealth_report(chart, when: datetime) -> WealthReport:
         ("WEALTH-UPAGRAHA-001", lambda: wealth_rules.rule_wealth_upagraha_placement(chart)),
         ("WEALTH-YAMAKANTAKA-PROTECT-001", lambda: wealth_rules.rule_wealth_yamakantaka_protective(chart, when)),
         ("WEALTH-YOGA-PROMOTION-001", lambda: wealth_rules.rule_wealth_yoga_promotion(chart)),
+        ("WEALTH-D9-RECONCILIATION-001", lambda: wealth_rules.rule_wealth_d9_reconciliation(chart)),
         ("WEALTH-GOCHARA-001", lambda: wealth_rules.rule_wealth_gochara(chart, when)),
     ]
 

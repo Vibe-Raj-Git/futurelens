@@ -77,6 +77,7 @@ def test_all_nine_rules_evaluated():
         "FAMILY-UPAGRAHA-001",
         "FAMILY-YAMAKANTAKA-PROTECT-001",
         "FAMILY-YOGA-PROMOTION-001",
+        "FAMILY-D9-RECONCILIATION-001",
         "FAMILY-GOCHARA-001",
     }
     assert set(report.rules_evaluated) == expected

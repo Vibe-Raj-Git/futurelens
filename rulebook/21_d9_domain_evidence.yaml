@@ -1,0 +1,117 @@
+version: 0.1
+system: D9_DOMAIN_EVIDENCE
+
+# Domain-level surfacing of D1/D9 reconciliation.
+#
+# The reconciliation result (see rulebook/20_divisional_charts.yaml)
+# is a per-graha comparison of D1 dignity to D9 dignity. This
+# rulebook defines how that comparison becomes evidence in each
+# domain engine.
+
+domain_rules:
+
+  WEALTH:
+    rule_id: WEALTH-D9-RECONCILIATION-001
+    classical_basis: "BPHS ch. 6 (Navamsa as confirmation)"
+    method: wealth_d9_reconciliation
+
+    relevant_grahas:
+      description: >
+        Grahas that are either a wealth lord (ruler of 2, 5, 9, 11)
+        or a wealth significator (WEALTH_SIGNIFICATORS).
+      derivation: >
+        union of { lord_of_house(h) for h in WEALTH_HOUSES } and
+        WEALTH_SIGNIFICATORS
+
+  CAREER:
+    rule_id: CAREER-D9-RECONCILIATION-001
+    classical_basis: "BPHS ch. 6 (Navamsa as confirmation)"
+    method: career_d9_reconciliation
+
+    relevant_grahas:
+      description: >
+        Grahas that are either a career lord (ruler of 10, 6, 2,
+        11) or a career significator (CAREER_SIGNIFICATORS).
+      derivation: >
+        union of { lord_of_house(h) for h in CAREER_HOUSES } and
+        CAREER_SIGNIFICATORS
+
+  FAMILY:
+    rule_id: FAMILY-D9-RECONCILIATION-001
+    classical_basis: "BPHS ch. 6 (Navamsa as confirmation)"
+    method: family_d9_reconciliation
+
+    relevant_grahas:
+      description: >
+        Grahas that are either a family lord (ruler of 2, 4, 5, 7,
+        9, 12) or a family significator (FAMILY_SIGNIFICATORS).
+      derivation: >
+        union of { lord_of_house(h) for h in FAMILY_HOUSES } and
+        FAMILY_SIGNIFICATORS
+      note: >
+        FAMILY_SIGNIFICATORS includes MOON, SUN, MARS, JUPITER,
+        VENUS, MERCURY, SATURN. Rahu and Ketu are excluded
+        because they are not classical family significators.
+
+category_to_evidence:
+
+  CONFIRMED:
+    direction: PROTECTIVE
+    weight_tier: SUPPORTING
+    finding_template: >
+      {graha} is {d1_dignity} in D1 and {d9_dignity} in D9.
+      The Navamsa confirms the D1 judgment.
+    interpretation_template: >
+      The graha delivers as the natal chart indicates. No
+      adjustment to the D1 reading.
+
+  UPGRADED:
+    direction: PROTECTIVE
+    weight_tier: MODIFIER
+    finding_template: >
+      {graha} is {d1_dignity} in D1 but {d9_dignity} in D9.
+      The Navamsa upgrades the D1 judgment.
+    interpretation_template: >
+      Neecha Bhanga at the divisional level. The graha delivers
+      more than its D1 dignity alone would suggest.
+
+  DOWNGRADED:
+    direction: ADVERSE
+    weight_tier: MODIFIER
+    finding_template: >
+      {graha} is {d1_dignity} in D1 but {d9_dignity} in D9.
+      The Navamsa downgrades the D1 judgment.
+    interpretation_template: >
+      The D1 strength does not carry into the Navamsa. The graha
+      delivers less than its D1 dignity alone would suggest.
+
+  NEUTRAL:
+    direction: PROTECTIVE
+    weight_tier: SUPPORTING
+    finding_template: >
+      {graha} is {d1_dignity} in D1 and {d9_dignity} in D9.
+      D1 and D9 do not align on strength or weakness.
+    interpretation_template: >
+      The Navamsa neither confirms nor denies the D1 judgment.
+
+evidence_fields:
+
+  evidence_type: UPAGRAHA_NATAL_PLACEMENT   # reused; no new enum
+  domain: WEALTH | CAREER | FAMILY
+  subject: "{graha} D1/D9 reconciliation"
+  finding: rendered from finding_template
+  interpretation: rendered from interpretation_template
+  notes:
+    - "graha={graha}"
+    - "d1_dignity={d1_dignity}"
+    - "d9_dignity={d9_dignity}"
+    - "d9_sign={d9_sign_index}"
+    - "category={category}"
+
+notes:
+  - "Only domain-relevant grahas produce reconciliation evidence."
+  - "The D9 reconciliation is informational on charts with no
+    UPGRADED or DOWNGRADED cases; it does not change the domain
+    verdict."
+  - "On charts with UPGRADED or DOWNGRADED cases, the MODIFIER
+    weight tier qualifies the domain reading accordingly."

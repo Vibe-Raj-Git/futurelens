@@ -62,6 +62,8 @@ def build_family_report(chart, when: datetime) -> FamilyReport:
          lambda: family_rules.rule_family_yamakantaka_protective(chart, when)),
         ("FAMILY-YOGA-PROMOTION-001",
          lambda: family_rules.rule_family_yoga_promotion(chart)),
+        ("FAMILY-D9-RECONCILIATION-001",
+         lambda: family_rules.rule_family_d9_reconciliation(chart)),
         ("FAMILY-GOCHARA-001",
          lambda: family_rules.rule_family_gochara(chart, when)),
     ]

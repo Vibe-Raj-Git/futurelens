@@ -126,3 +126,114 @@ def weight_for_transit() -> Weight:
 def weight_for_upagraha() -> Weight:
     """Upagrahas are subtle modifiers. Always MODIFIER."""
     return Weight.MODIFIER
+
+# ----------------------------------------------------------------------
+# D9 reconciliation evidence (shared across all domains)
+# ----------------------------------------------------------------------
+
+_D9_CATEGORY_TO_DIRECTION = {
+    "CONFIRMED": "PROTECTIVE",
+    "UPGRADED": "PROTECTIVE",
+    "DOWNGRADED": "ADVERSE",
+    "NEUTRAL": "PROTECTIVE",
+}
+
+_D9_CATEGORY_TO_WEIGHT = {
+    "CONFIRMED": "SUPPORTING",
+    "UPGRADED": "MODIFIER",
+    "DOWNGRADED": "MODIFIER",
+    "NEUTRAL": "SUPPORTING",
+}
+
+
+def _d9_interpretation(category: str) -> str:
+    if category == "CONFIRMED":
+        return (
+            "The Navamsa confirms the D1 judgment. No adjustment "
+            "to the natal reading."
+        )
+    if category == "UPGRADED":
+        return (
+            "Neecha Bhanga at the divisional level. The graha "
+            "delivers more than its D1 dignity alone would suggest."
+        )
+    if category == "DOWNGRADED":
+        return (
+            "The D1 strength does not carry into the Navamsa. The "
+            "graha delivers less than its D1 dignity alone would "
+            "suggest."
+        )
+    return (
+        "The Navamsa neither confirms nor denies the D1 judgment."
+    )
+
+
+def d9_reconciliation_evidence(
+    reconciliation,
+    relevant_grahas,
+    domain,
+    prov_factory,
+    rule_id,
+    basis,
+    method,
+):
+    """
+    Build D1/D9 reconciliation Evidence items for a domain, filtered
+    to the grahas relevant to that domain.
+
+    Parameters
+    ----------
+    reconciliation : dict[str, ReconciliationResult]
+        Output of futurelens.vargas.reconciliation.reconcile(chart).
+    relevant_grahas : iterable[str]
+        Names of grahas to emit evidence for.
+    domain : str
+        Domain name ("WEALTH", "CAREER", "FAMILY").
+    prov_factory : callable(rule_id, basis, method) -> Provenance
+        The domain's provenance factory (its local _prov helper).
+    rule_id : str
+        Rule ID to stamp on the provenance.
+    basis : str
+        Classical basis string.
+    method : str
+        Method name for the provenance.
+    """
+    from futurelens.models.evidence import (
+        Direction,
+        Evidence,
+        EvidenceType,
+        Weight,
+    )
+
+    evidence: list[Evidence] = []
+
+    for graha in sorted(relevant_grahas):
+        r = reconciliation.get(graha)
+        if r is None:
+            continue
+
+        category = r.category
+        direction = Direction[_D9_CATEGORY_TO_DIRECTION[category]]
+        weight = Weight[_D9_CATEGORY_TO_WEIGHT[category]]
+
+        evidence.append(Evidence(
+            evidence_type=EvidenceType.UPAGRAHA_NATAL_PLACEMENT,
+            direction=direction,
+            domain=domain,
+            upagraha=None,
+            target_evidence_id=None,
+            classical_strength_ratio=1.0,
+            weight=weight,
+            provenance=prov_factory(rule_id, basis, method),
+            subject=f"{graha} D1/D9 reconciliation",
+            finding=r.explanation,
+            interpretation=_d9_interpretation(category),
+            notes=(
+                f"graha={graha}",
+                f"d1_dignity={r.d1_dignity}",
+                f"d9_dignity={r.d9_dignity}",
+                f"category={category}",
+            ),
+        ))
+
+    return evidence

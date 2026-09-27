@@ -78,6 +78,7 @@ def test_all_eight_rules_evaluated():
         "CAREER-UPAGRAHA-001",
         "CAREER-AMALA-YOGA-001",
         "CAREER-YOGA-PROMOTION-001",
+        "CAREER-D9-RECONCILIATION-001",
         "CAREER-GOCHARA-001",
     }
     assert set(report.rules_evaluated) == expected

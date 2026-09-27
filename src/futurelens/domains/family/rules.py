@@ -764,3 +764,37 @@ def _sav_strength_label(bindus: int) -> str:
         return "WEAK"
     return "VERY_WEAK"
 
+# --- Rule: D9 reconciliation ---------------------------------------------
+
+def rule_family_d9_reconciliation(chart) -> list[Evidence]:
+    """FAMILY-D9-RECONCILIATION-001
+
+    Surface the D1/D9 reconciliation for grahas relevant to the
+    family domain: family lords (2, 4, 5, 7, 9, 12) and family
+    significators.
+    """
+    from futurelens.domains._weighting import (
+        d9_reconciliation_evidence,
+    )
+    from futurelens.domains.family.definitions import (
+        FAMILY_HOUSES,
+        FAMILY_SIGNIFICATORS,
+    )
+    from futurelens.vargas.reconciliation import reconcile
+
+    reconciliation = reconcile(chart)
+
+    family_lords = {
+        chart.houses.lord_of_house(h) for h in FAMILY_HOUSES
+    }
+    relevant = family_lords | set(FAMILY_SIGNIFICATORS)
+
+    return d9_reconciliation_evidence(
+        reconciliation=reconciliation,
+        relevant_grahas=relevant,
+        domain=DOMAIN,
+        prov_factory=_prov,
+        rule_id="FAMILY-D9-RECONCILIATION-001",
+        basis="BPHS ch. 6 (Navamsa as confirmation)",
+        method="family_d9_reconciliation",
+    )

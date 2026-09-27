@@ -596,3 +596,34 @@ def _sav_strength_label(bindus: int) -> str:
         return "WEAK"
     return "VERY_WEAK"
 
+# --- Rule: D9 reconciliation ---------------------------------------------
+
+def rule_wealth_d9_reconciliation(chart) -> list[Evidence]:
+    """WEALTH-D9-RECONCILIATION-001
+
+    Surface the D1/D9 reconciliation for grahas relevant to the
+    wealth domain: wealth lords (2, 5, 9, 11) and wealth
+    significators.
+    """
+    from futurelens.domains._weighting import (
+        d9_reconciliation_evidence,
+    )
+    from futurelens.vargas.reconciliation import reconcile
+
+    reconciliation = reconcile(chart)
+
+    wealth_lords = {
+        chart.houses.lord_of_house(h) for h in WEALTH_HOUSES
+    }
+    relevant = wealth_lords | set(WEALTH_SIGNIFICATORS)
+
+    return d9_reconciliation_evidence(
+        reconciliation=reconciliation,
+        relevant_grahas=relevant,
+        domain=DOMAIN,
+        prov_factory=_prov,
+        rule_id="WEALTH-D9-RECONCILIATION-001",
+        basis="BPHS ch. 6 (Navamsa as confirmation)",
+        method="wealth_d9_reconciliation",
+    )
+

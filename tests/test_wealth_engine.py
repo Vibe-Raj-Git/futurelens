@@ -81,6 +81,7 @@ def test_all_eight_rules_evaluated():
         "WEALTH-UPAGRAHA-001",
         "WEALTH-YAMAKANTAKA-PROTECT-001",
         "WEALTH-YOGA-PROMOTION-001",
+        "WEALTH-D9-RECONCILIATION-001",
         "WEALTH-GOCHARA-001",
     }
     assert set(report.rules_evaluated) == expected

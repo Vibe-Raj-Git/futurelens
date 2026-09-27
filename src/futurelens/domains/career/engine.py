@@ -60,6 +60,8 @@ def build_career_report(chart, when: datetime) -> CareerReport:
          lambda: career_rules.rule_career_amala_yoga(chart)),
         ("CAREER-YOGA-PROMOTION-001",
          lambda: career_rules.rule_career_yoga_promotion(chart)),
+        ("CAREER-D9-RECONCILIATION-001",
+         lambda: career_rules.rule_career_d9_reconciliation(chart)),
         ("CAREER-GOCHARA-001",
          lambda: career_rules.rule_career_gochara(chart, when)),
     ]

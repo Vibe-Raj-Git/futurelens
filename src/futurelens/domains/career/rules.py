@@ -635,3 +635,37 @@ def _sav_strength_label(bindus: int) -> str:
         return "WEAK"
     return "VERY_WEAK"
 
+# --- Rule: D9 reconciliation ---------------------------------------------
+
+def rule_career_d9_reconciliation(chart) -> list[Evidence]:
+    """CAREER-D9-RECONCILIATION-001
+
+    Surface the D1/D9 reconciliation for grahas relevant to the
+    career domain: career lords (10, 6, 2, 11) and career
+    significators.
+    """
+    from futurelens.domains._weighting import (
+        d9_reconciliation_evidence,
+    )
+    from futurelens.domains.career.definitions import (
+        CAREER_HOUSES,
+        CAREER_SIGNIFICATORS,
+    )
+    from futurelens.vargas.reconciliation import reconcile
+
+    reconciliation = reconcile(chart)
+
+    career_lords = {
+        chart.houses.lord_of_house(h) for h in CAREER_HOUSES
+    }
+    relevant = career_lords | set(CAREER_SIGNIFICATORS)
+
+    return d9_reconciliation_evidence(
+        reconciliation=reconciliation,
+        relevant_grahas=relevant,
+        domain=DOMAIN,
+        prov_factory=_prov,
+        rule_id="CAREER-D9-RECONCILIATION-001",
+        basis="BPHS ch. 6 (Navamsa as confirmation)",
+        method="career_d9_reconciliation",
+    )
