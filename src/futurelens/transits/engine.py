@@ -23,6 +23,27 @@ def _nakshatra_distance(from_nakshatra: int, to_nakshatra: int) -> int:
     return (to_nakshatra - from_nakshatra) % 27
 
 
+
+def _speed_for(name: str, when: datetime, ephemeris: SwissEphemerisProvider) -> float:
+    """
+    Return longitude speed in degrees per day for a graha.
+
+    Uses the ephemeris directly. Falls back to 0.0 if the ephemeris
+    call fails for any reason, which keeps the transit engine robust.
+    """
+    from futurelens.grahas.definitions import GRAHA_BY_NAME
+
+    lookup = "RAHU" if name == "KETU" else name
+    definition = GRAHA_BY_NAME.get(lookup)
+    if definition is None:
+        return 0.0
+
+    try:
+        _, speed, _ = ephemeris.planet_longitude(when, definition.swe_id)
+        return float(speed)
+    except Exception:
+        return 0.0
+
 def compute_transits(
     when: datetime,
     natal_ascendant_sign: int,
@@ -66,6 +87,7 @@ def compute_transits(
                 natal_moon_nakshatra_index,
                 pos.nakshatra.nakshatra_index,
             ),
+            longitude_speed=_speed_for(name, when, ephemeris),
             sav_bindus=sav_value,
             sav_strength=sav_label,
         )

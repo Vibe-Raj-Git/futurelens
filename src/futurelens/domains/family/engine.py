@@ -56,14 +56,14 @@ def build_family_report(chart, when: datetime) -> FamilyReport:
          lambda: family_rules.rule_family_relationship(chart)),
         ("FAMILY-LORD-DASHA-001",
          lambda: family_rules.rule_family_lord_dasha(chart, when)),
-        ("FAMILY-SIGNIFICATOR-TRANSIT-001",
-         lambda: family_rules.rule_family_significator_transit(chart, when)),
         ("FAMILY-UPAGRAHA-001",
          lambda: family_rules.rule_family_upagraha_placement(chart)),
         ("FAMILY-YAMAKANTAKA-PROTECT-001",
          lambda: family_rules.rule_family_yamakantaka_protective(chart, when)),
         ("FAMILY-YOGA-PROMOTION-001",
          lambda: family_rules.rule_family_yoga_promotion(chart)),
+        ("FAMILY-GOCHARA-001",
+         lambda: family_rules.rule_family_gochara(chart, when)),
     ]
 
     for rule_id, fn in rule_fns:

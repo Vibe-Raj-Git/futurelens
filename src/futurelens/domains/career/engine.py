@@ -54,14 +54,14 @@ def build_career_report(chart, when: datetime) -> CareerReport:
          lambda: career_rules.rule_career_significator_natal(chart)),
         ("CAREER-LORD-DASHA-001",
          lambda: career_rules.rule_career_lord_dasha(chart, when)),
-        ("CAREER-SIGNIFICATOR-TRANSIT-001",
-         lambda: career_rules.rule_career_significator_transit(chart, when)),
         ("CAREER-UPAGRAHA-001",
          lambda: career_rules.rule_career_upagraha_placement(chart)),
         ("CAREER-AMALA-YOGA-001",
          lambda: career_rules.rule_career_amala_yoga(chart)),
         ("CAREER-YOGA-PROMOTION-001",
          lambda: career_rules.rule_career_yoga_promotion(chart)),
+        ("CAREER-GOCHARA-001",
+         lambda: career_rules.rule_career_gochara(chart, when)),
     ]
 
     for rule_id, fn in rule_fns:

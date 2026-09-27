@@ -54,6 +54,7 @@ class Weight(str, Enum):
     STRUCTURAL = "STRUCTURAL"
     SUPPORTING = "SUPPORTING"
     MODIFIER = "MODIFIER"
+    STRONG_MODIFIER = "STRONG_MODIFIER"
 
 
 @dataclass(frozen=True)

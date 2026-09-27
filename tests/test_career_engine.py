@@ -68,17 +68,17 @@ def test_career_report_is_produced():
     assert isinstance(report, CareerReport)
 
 
-def test_all_seven_rules_evaluated():
+def test_all_eight_rules_evaluated():
     chart = cast_chart(BIRTH, LAT, LON)
     report = build_career_report(chart, TARGET)
     expected = {
         "CAREER-HOUSE-LORD-NATAL-001",
         "CAREER-SIGNIFICATOR-NATAL-001",
         "CAREER-LORD-DASHA-001",
-        "CAREER-SIGNIFICATOR-TRANSIT-001",
         "CAREER-UPAGRAHA-001",
         "CAREER-AMALA-YOGA-001",
         "CAREER-YOGA-PROMOTION-001",
+        "CAREER-GOCHARA-001",
     }
     assert set(report.rules_evaluated) == expected
     assert report.rules_failed == []

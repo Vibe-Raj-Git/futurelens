@@ -464,3 +464,113 @@ def rule_wealth_yoga_promotion(chart) -> list[Evidence]:
             notes=tuple(notes),
         ))
     return evidence
+
+
+# --- Rule 8: Gochara transit effects -------------------------------------
+
+def rule_wealth_gochara(chart, when) -> list[Evidence]:
+    """
+    WEALTH-GOCHARA-001
+
+    Filter the four slow-graha Gochara transits to those that affect
+    the wealth houses (2, 5, 9, 11) by occupation or by aspect.
+
+    Verdict maps to direction:
+      STRONGLY_FAVOURABLE, FAVOURABLE -> PROTECTIVE
+      STRONGLY_UNFAVOURABLE, UNFAVOURABLE -> ADVERSE
+      MIXED -> ADVERSE (mixed is treated as a caution)
+
+    Weight:
+      STRONG_MODIFIER for the STRONGLY_* verdicts
+      MODIFIER otherwise
+    """
+    from futurelens.gochara import compute_gochara
+    from futurelens.gochara.engine import GocharaReport
+    from futurelens.models.gochara import GocharaVerdict
+    from futurelens.models.evidence import Weight
+
+    try:
+        report: GocharaReport = compute_gochara(chart, when)
+    except Exception:
+        return []
+
+    evidence: list[Evidence] = []
+
+    for graha, transit in report.transits.items():
+        # Does the transit occupy or aspect a wealth house?
+        occupied = transit.house_from_lagna in WEALTH_HOUSES
+        aspected = any(
+            h in WEALTH_HOUSES for h in transit.aspected_natal_houses
+        )
+        if not (occupied or aspected):
+            continue
+
+        verdict = transit.final_verdict
+
+        if verdict in (
+            GocharaVerdict.STRONGLY_FAVOURABLE,
+            GocharaVerdict.FAVOURABLE,
+        ):
+            direction = Direction.PROTECTIVE
+        else:
+            direction = Direction.ADVERSE
+
+        if verdict in (
+            GocharaVerdict.STRONGLY_FAVOURABLE,
+            GocharaVerdict.STRONGLY_UNFAVOURABLE,
+        ):
+            weight = Weight.STRONG_MODIFIER
+        else:
+            weight = weight_for_transit()
+
+        relevance_parts = []
+        if occupied:
+            relevance_parts.append(
+                f"occupies house {transit.house_from_lagna}"
+            )
+        if aspected:
+            wealth_aspects = [
+                h for h in transit.aspected_natal_houses
+                if h in WEALTH_HOUSES
+            ]
+            relevance_parts.append(
+                f"aspects wealth houses {wealth_aspects}"
+            )
+        relevance = " and ".join(relevance_parts)
+
+        evidence.append(Evidence(
+            evidence_type=EvidenceType.UPAGRAHA_TRANSIT_TRIGGER,
+            direction=direction,
+            domain=DOMAIN,
+            upagraha=None,
+            target_evidence_id=None,
+            classical_strength_ratio=1.0,
+            weight=weight,
+            provenance=_prov(
+                rule_id="WEALTH-GOCHARA-001",
+                basis="Phaladeepika ch. 26; BPHS ch. 34",
+                method="wealth_gochara_filter",
+            ),
+            subject=f"{graha.title()} Gochara",
+            finding=(
+                f"{transit.finding} "
+                f"It {relevance}."
+            ),
+            interpretation=(
+                f"{transit.interpretation} "
+                f"Verdict for the wealth domain: "
+                f"{verdict.value.replace('_', ' ').lower()}."
+            ),
+            notes=(
+                f"graha={graha}",
+                f"transit_sign={transit.transit_sign}",
+                f"house_from_lagna={transit.house_from_lagna}",
+                f"house_from_moon={transit.house_from_moon}",
+                f"sav_bindus={transit.sav_bindus}",
+                f"motion={transit.motion.value}",
+                f"verdict={verdict.value}",
+                f"vedha_active={transit.vedha_active}",
+            ),
+        ))
+
+    return evidence

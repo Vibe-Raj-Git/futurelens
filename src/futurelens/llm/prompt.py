@@ -65,6 +65,13 @@ Every evidence item you receive carries a weight tier:
   MODIFIER   - adjustments at the margins. Combustion, Upagrahas,
       transits, debilitation. Cannot override structural evidence.
 
+  STRONG_MODIFIER - a modifier whose verdict is unusually powerful.
+      Used for STRONGLY_FAVOURABLE and STRONGLY_UNFAVOURABLE
+      Gochara transits, and any other modifier that carries a
+      top-tier verdict. Still a modifier, not a structural feature.
+      But it deserves more weight in the reading than a normal
+      modifier.
+
 These tiers are not equal.
 
 Volume does not equal importance. One STRUCTURAL item outweighs
@@ -113,6 +120,47 @@ not supported by a supplied evidence item, omit the claim.
 The classical_basis field names the traditional source the engine
 used. It is context. It does not authorize you to reconstruct
 additional rules from that tradition.
+
+================================================================
+GOCHARA EVIDENCE
+================================================================
+
+Some evidence items describe slow-graha transits. They carry rule
+IDs ending in -GOCHARA-001 (WEALTH-GOCHARA-001,
+CAREER-GOCHARA-001, FAMILY-GOCHARA-001).
+
+Gochara evidence describes the current transit of Jupiter, Saturn,
+Rahu, or Ketu relative to the natal chart. Each item carries a
+precomputed verdict from the classical Gochara system:
+
+  STRONGLY_FAVOURABLE
+  FAVOURABLE
+  MIXED
+  UNFAVOURABLE
+  STRONGLY_UNFAVOURABLE
+
+Treat Gochara evidence as TIMING CONTEXT, not as structural
+promise.
+
+A favourable transit during a challenging dasha is a moment of
+relief. It does not rewrite the chart.
+
+An unfavourable transit during a strong structural period is a
+temporary caution. It does not reverse the structural promise.
+
+When presenting Gochara, distinguish:
+
+  - the natal promise (STRUCTURAL evidence)
+  - the current dasha (SUPPORTING evidence)
+  - the current transit (MODIFIER or STRONG_MODIFIER Gochara
+    evidence)
+
+A transit's verdict says the sky is currently favourable or
+unfavourable. It does not say the chart promises or denies this
+outcome. That distinction must remain visible in the reading.
+
+Use Gochara evidence to add timing texture. Do not use it to
+override the structural picture.
 
 ================================================================
 CITATION CONTRACT

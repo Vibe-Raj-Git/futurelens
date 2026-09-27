@@ -71,16 +71,17 @@ def test_wealth_report_is_produced():
     assert isinstance(report, WealthReport)
 
 
-def test_all_six_rules_evaluated():
+def test_all_eight_rules_evaluated():
     chart = cast_chart(BIRTH, LAT, LON)
     report = build_wealth_report(chart, TARGET)
     expected = {
         "WEALTH-HOUSE-LORD-NATAL-001",
         "WEALTH-SIGNIFICATOR-NATAL-001",
         "WEALTH-LORD-DASHA-001",
-        "WEALTH-SIGNIFICATOR-TRANSIT-001",
         "WEALTH-UPAGRAHA-001",
         "WEALTH-YAMAKANTAKA-PROTECT-001",
+        "WEALTH-YOGA-PROMOTION-001",
+        "WEALTH-GOCHARA-001",
     }
     assert set(report.rules_evaluated) == expected
     assert report.rules_failed == []

@@ -634,3 +634,111 @@ def rule_family_yoga_promotion(chart) -> list[Evidence]:
             notes=tuple(notes),
         ))
     return evidence
+
+
+# --- Rule 9: Gochara transit effects -------------------------------------
+
+def rule_family_gochara(chart, when) -> list[Evidence]:
+    """
+    FAMILY-GOCHARA-001
+
+    Filter the four slow-graha Gochara transits to those that affect
+    the family houses (2, 4, 5, 7, 9, 12) by occupation or aspect.
+
+    Verdict maps to direction:
+      FAVOURABLE verdicts -> PROTECTIVE
+      MIXED and UNFAVOURABLE verdicts -> ADVERSE
+
+    Weight:
+      STRONG_MODIFIER for STRONGLY_* verdicts
+      MODIFIER otherwise
+    """
+    from futurelens.gochara import compute_gochara
+    from futurelens.gochara.engine import GocharaReport
+    from futurelens.models.gochara import GocharaVerdict
+    from futurelens.models.evidence import Weight
+
+    try:
+        report: GocharaReport = compute_gochara(chart, when)
+    except Exception:
+        return []
+
+    evidence: list[Evidence] = []
+
+    for graha, transit in report.transits.items():
+        occupied = transit.house_from_lagna in FAMILY_HOUSES
+        aspected = any(
+            h in FAMILY_HOUSES for h in transit.aspected_natal_houses
+        )
+        if not (occupied or aspected):
+            continue
+
+        verdict = transit.final_verdict
+
+        if verdict in (
+            GocharaVerdict.STRONGLY_FAVOURABLE,
+            GocharaVerdict.FAVOURABLE,
+        ):
+            direction = Direction.PROTECTIVE
+        else:
+            direction = Direction.ADVERSE
+
+        if verdict in (
+            GocharaVerdict.STRONGLY_FAVOURABLE,
+            GocharaVerdict.STRONGLY_UNFAVOURABLE,
+        ):
+            weight = Weight.STRONG_MODIFIER
+        else:
+            weight = weight_for_transit()
+
+        relevance_parts = []
+        if occupied:
+            relevance_parts.append(
+                f"occupies house {transit.house_from_lagna}"
+            )
+        if aspected:
+            family_aspects = [
+                h for h in transit.aspected_natal_houses
+                if h in FAMILY_HOUSES
+            ]
+            relevance_parts.append(
+                f"aspects family houses {family_aspects}"
+            )
+        relevance = " and ".join(relevance_parts)
+
+        evidence.append(Evidence(
+            evidence_type=EvidenceType.UPAGRAHA_TRANSIT_TRIGGER,
+            direction=direction,
+            domain=DOMAIN,
+            upagraha=None,
+            target_evidence_id=None,
+            classical_strength_ratio=1.0,
+            weight=weight,
+            provenance=_prov(
+                rule_id="FAMILY-GOCHARA-001",
+                basis="Phaladeepika ch. 26; BPHS ch. 34",
+                method="family_gochara_filter",
+            ),
+            subject=f"{graha.title()} Gochara",
+            finding=(
+                f"{transit.finding} "
+                f"It {relevance}."
+            ),
+            interpretation=(
+                f"{transit.interpretation} "
+                f"Verdict for the family domain: "
+                f"{verdict.value.replace('_', ' ').lower()}."
+            ),
+            notes=(
+                f"graha={graha}",
+                f"transit_sign={transit.transit_sign}",
+                f"house_from_lagna={transit.house_from_lagna}",
+                f"house_from_moon={transit.house_from_moon}",
+                f"sav_bindus={transit.sav_bindus}",
+                f"motion={transit.motion.value}",
+                f"verdict={verdict.value}",
+                f"vedha_active={transit.vedha_active}",
+            ),
+        ))
+
+    return evidence

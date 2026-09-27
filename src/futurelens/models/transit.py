@@ -14,6 +14,8 @@ class TransitPosition:
     house_from_lagna: int
     house_from_moon: int
     house_from_moon_nakshatra: int
+    # Longitude speed in degrees per day. Negative means retrograde.
+    longitude_speed: float = 0.0
     # SAV bindu value for the sign the transit occupies (if available).
     sav_bindus: int | None = None
     sav_strength: str | None = None
