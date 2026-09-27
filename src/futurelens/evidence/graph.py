@@ -88,37 +88,62 @@ def _notes_to_dict(notes: tuple[str, ...]) -> dict[str, str]:
     return result
 
 
+def _layer_of(rule_id: str) -> str:
+    """
+    Return the evidence layer implied by a rule ID.
+
+    Classical Jyotish operates on distinct planes:
+      natal   - the chart's promise (D1, vargas, yogas, upagrahas)
+      dasha   - the running period
+      transit - the current sky (Gochara)
+
+    These planes do not contradict each other. They describe
+    different realities of the same graha. Only items in the
+    same layer can be in tension.
+    """
+    if rule_id.endswith("-GOCHARA-001"):
+        return "transit"
+    if rule_id.endswith("-DASHA-001"):
+        return "dasha"
+    return "natal"
+
+
 def _subject_of(evidence: Evidence) -> str | None:
     """
-    Derive a subject key from the evidence item's notes.
+    Derive a subject key from the evidence item's notes, prefixed
+    by the evidence layer.
 
-    The subject identifies WHAT the evidence is about. Two items
-    with different subjects cannot contradict each other.
+    Two items can only contradict if they share the same layer AND
+    the same subject within that layer. This prevents spurious
+    pairs such as a natal D9 item and a Gochara transit item being
+    reported as contradictory.
 
-    Priority order:
-      1. upagraha=<NAME>            -> "upagraha:NAME"
-      2. graha=<NAME>,house=<N>     -> "graha:NAME@house:N"
-      3. graha=<NAME>               -> "graha:NAME"
-      4. transit_graha=<NAME>       -> "transit:NAME"
-      5. house=<N>                  -> "house:N"
+    Priority order (within a layer):
+      1. upagraha=<NAME>            -> "<layer>:upagraha:NAME"
+      2. graha=<NAME>,house=<N>     -> "<layer>:graha:NAME@house:N"
+      3. graha=<NAME>               -> "<layer>:graha:NAME"
+      4. transit_graha=<NAME>       -> "<layer>:transit:NAME"
+      5. house=<N>                  -> "<layer>:house:N"
 
     Returns None if no subject can be derived.
     """
     notes = _notes_to_dict(evidence.notes)
+    layer = _layer_of(evidence.provenance.rule_id)
+    prefix = f"{layer}:"
 
     if "upagraha" in notes:
-        return f"upagraha:{notes['upagraha']}"
+        return f"{prefix}upagraha:{notes['upagraha']}"
 
     if "graha" in notes:
         if "house" in notes:
-            return f"graha:{notes['graha']}@house:{notes['house']}"
-        return f"graha:{notes['graha']}"
+            return f"{prefix}graha:{notes['graha']}@house:{notes['house']}"
+        return f"{prefix}graha:{notes['graha']}"
 
     if "transit_graha" in notes:
-        return f"transit:{notes['transit_graha']}"
+        return f"{prefix}transit:{notes['transit_graha']}"
 
     if "house" in notes:
-        return f"house:{notes['house']}"
+        return f"{prefix}house:{notes['house']}"
 
     return None
 

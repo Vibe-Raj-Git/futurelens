@@ -88,25 +88,26 @@ def reconcile(chart) -> dict[str, ReconciliationResult]:
 
 
 def _explain(name: str, d1: str, d9: str, category: str) -> str:
+    """
+    Return the FINDING clause only.
+
+    The interpretation (phala) is supplied separately by the domain
+    wiring (see _d9_interpretation in domains/_weighting.py).
+    Classical Jyotish keeps fact (yoga / avastha) distinct from
+    inference (phala); each is stated once, in its own field.
+    """
     if category == "CONFIRMED":
         return (
-            f"{name} is {d1.lower()} in D1 and {d9.lower()} in D9. "
-            f"The D9 chart confirms the D1 judgment."
+            f"{name} is {d1.lower()} in D1 and {d9.lower()} in D9."
         )
     if category == "UPGRADED":
         return (
-            f"{name} is {d1.lower()} in D1 but {d9.lower()} in D9. "
-            f"The D9 chart upgrades the D1 judgment - Neecha Bhanga "
-            f"at the divisional level."
+            f"{name} is {d1.lower()} in D1 but {d9.lower()} in D9."
         )
     if category == "DOWNGRADED":
         return (
-            f"{name} is {d1.lower()} in D1 but {d9.lower()} in D9. "
-            f"The D9 chart downgrades the D1 judgment - the D1 "
-            f"strength is not carried into the navamsa."
+            f"{name} is {d1.lower()} in D1 but {d9.lower()} in D9."
         )
     return (
-        f"{name} is {d1.lower()} in D1 and {d9.lower()} in D9. "
-        f"D1 and D9 do not align on strength or weakness; the D9 "
-        f"chart neither confirms nor denies the D1 judgment."
+        f"{name} is {d1.lower()} in D1 and {d9.lower()} in D9."
     )

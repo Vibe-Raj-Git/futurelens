@@ -129,7 +129,7 @@ def test_contradiction_on_same_graha_house():
     c = _detect_contradictions(items)
     assert len(c) == 1
     assert isinstance(c[0], Contradiction)
-    assert "graha:SUN@house:2" == c[0].subject
+    assert c[0].subject == "natal:graha:SUN@house:2"
 
 
 def test_contradiction_on_same_upagraha():
@@ -139,7 +139,7 @@ def test_contradiction_on_same_upagraha():
     ]
     c = _detect_contradictions(items)
     assert len(c) == 1
-    assert c[0].subject == "upagraha:GULIKA"
+    assert c[0].subject == "natal:upagraha:GULIKA"
 
 
 def test_standalone_items_not_eligible_for_contradiction():
@@ -164,3 +164,33 @@ def test_chart_evidence_method_with_domain_filter():
     chart = cast_chart(BIRTH, LAT, LON)
     graph = chart.evidence(TARGET, domain="WEALTH")
     assert isinstance(graph, EvidenceGraph)
+
+def test_no_contradiction_across_layers():
+    """
+    A natal item and a transit item about the same graha are never
+    contradictory. They describe different planes of reality - the
+    chart's promise vs. the current sky. The layer prefix in the
+    subject key prevents them from being bucketed together.
+    """
+    items = [
+        _make("WEALTH-D9-RECONCILIATION-001", Direction.PROTECTIVE,
+              ("graha=JUPITER",)),
+        _make("WEALTH-GOCHARA-001", Direction.ADVERSE,
+              ("graha=JUPITER", "transit_graha=JUPITER")),
+    ]
+    assert _detect_contradictions(items) == []
+
+def test_contradiction_within_natal_layer():
+    """
+    Two natal items about the same graha and house still pair as
+    contradictory when their directions oppose.
+    """
+    items = [
+        _make("WEALTH-HOUSE-LORD-NATAL-001", Direction.PROTECTIVE,
+              ("graha=JUPITER", "house=2")),
+        _make("WEALTH-SIGNIFICATOR-NATAL-001", Direction.ADVERSE,
+              ("graha=JUPITER", "house=2")),
+    ]
+    c = _detect_contradictions(items)
+    assert len(c) == 1
+    assert c[0].subject == "natal:graha:JUPITER@house:2"
