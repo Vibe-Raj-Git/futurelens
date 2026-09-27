@@ -398,3 +398,30 @@ def chat(payload: ChatRequest) -> ChatResponse:
         backend=explanation_result.backend,
         rule_ids_cited=list(explanation_result.rule_ids_cited),
     )
+
+# --------------------------------------------------------------------------
+# Static frontend serving (production container)
+# --------------------------------------------------------------------------
+# In the containerized deployment, the built Vite frontend is copied
+# to ./frontend/dist and served by FastAPI at the root path.
+#
+# In local development, the frontend runs on its own Vite dev server
+# at http://localhost:5173 and this block is inert because the
+# ./frontend/dist folder does not exist.
+#
+# IMPORTANT: this mount must come AFTER all @app.get and @app.post
+# endpoints so that the specific API routes take precedence over the
+# catch-all static handler.
+
+from pathlib import Path as _Path
+
+from fastapi.staticfiles import StaticFiles as _StaticFiles
+
+_frontend_dist = _Path(__file__).resolve().parents[1] / "frontend" / "dist"
+
+if _frontend_dist.is_dir():
+    app.mount(
+        "/",
+        _StaticFiles(directory=str(_frontend_dist), html=True),
+        name="frontend",
+    )
